@@ -33,7 +33,14 @@ public class PictureTester
     beach.explore();
   }
   
-  
+  public static void testLiquify()
+  {
+	Picture beach = new Picture("images/beach.jpg");
+    beach.explore();
+ beach =   beach.liquify(100);
+    beach.explore();
+	  
+  }
   public static void testGrayscale()
   {
 	Picture beach = new Picture("images/beach.jpg");
@@ -108,7 +115,8 @@ public class PictureTester
     //testNegate();
     //testGrayscale();
    // testswapLeftRight();
-   testStairStep(10,10);
+   //testStairStep(10,10);
+   testLiquify();
     //testFixUnderwater();
     //testMirrorVertical();
     //testMirrorTemple();
