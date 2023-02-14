@@ -33,14 +33,7 @@ public class PictureTester
     beach.explore();
   }
   
-  public static void testLiquify()
-  {
-	Picture beach = new Picture("images/beach.jpg");
-    beach.explore();
- beach =   beach.liquify(100);
-    beach.explore();
-	  
-  }
+  
   public static void testGrayscale()
   {
 	Picture beach = new Picture("images/beach.jpg");
@@ -66,7 +59,23 @@ public class PictureTester
     beach.explore();
   }
   
+  public static void testLiquify()
+  {
+	Picture beach = new Picture("images/beach.jpg");
+    beach.explore();
+	beach =   beach.liquify(100);
+    beach.explore();
+	  
+  }
   
+   public static void testWavy()
+  {
+	Picture beach = new Picture("images/redMotorcycle.jpg");
+    beach.explore();
+	beach = beach.wavy(25);
+    beach.explore();
+	  
+  }
   /** Method to test mirrorVertical */
   public static void testMirrorVertical()
   {
@@ -114,9 +123,10 @@ public class PictureTester
     //testKeepOnlyGreen();
     //testNegate();
     //testGrayscale();
-   // testswapLeftRight();
+    //testswapLeftRight();
    //testStairStep(10,10);
-   testLiquify();
+   testWavy();
+	//testLiquify();
     //testFixUnderwater();
     //testMirrorVertical();
     //testMirrorTemple();

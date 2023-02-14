@@ -85,7 +85,7 @@ public class Picture extends SimplePicture
     
   }
   
-  /** To pixelate by dividing area into size x size.
+    /** To pixelate by dividing area into size x size.
  * @param size Side length of square area to pixelate.
  */
 	public void pixelate(int size)
@@ -137,50 +137,7 @@ public class Picture extends SimplePicture
 		}
 	}
 	
-  //blurs the picture
-	public Picture blur(int size)
-	{
-		Pixel[][] pixels = this.getPixels2D();
-		Picture result = new Picture(pixels.length, pixels[0].length);
-		Pixel[][] resultPixels = result.getPixels2D();
-		
-		
-		for(int x = 0; x < resultPixels.length; x++)
-		{
-			for(int y = 0; y < resultPixels[x].length; y ++)
-			{
-				int red = 0;
-				int blue = 0;
-				int green = 0;
-				int counter = 0;
-				
-				for(int xVal = x - size/2; xVal < x + size; xVal ++)
-				{
-					for(int yVal = y - size/2; yVal < y + size; yVal ++)
-					{
-						if(xVal > -1 && xVal < pixels.length && yVal > 0 && yVal < pixels[0].length)
-						{
-							red += pixels[xVal][yVal].getRed();
-							green += pixels[xVal][yVal].getGreen();
-							blue += pixels[xVal][yVal].getBlue();
-							counter++;
-						}	
-					}
-				}
-				
-				red = red/counter;
-				blue = blue/counter;
-				green = green/counter;
-				
-				resultPixels[x][y].setRed(red);
-				resultPixels[x][y].setBlue(blue);
-				resultPixels[x][y].setGreen(green);
-			}
-		}
-		
-		return result;
-	}
-	
+  
 	public Picture blur(int size)
 	{
 		Pixel[][] pixels = this.getPixels2D();
@@ -224,7 +181,118 @@ public class Picture extends SimplePicture
 		return result;
 	}
   
+  public Picture swapLeftRight()
+  {
+	Pixel[][] pixels = this.getPixels2D();
+	Picture result = new Picture(pixels.length, pixels[0].length);
+	Pixel[][] resultPixels = result.getPixels2D();
+	int newColumn = 0;
+	for (int row = 0; row < pixels.length; row++)
+	{
+		for ( int col = 0 ; col < pixels[0].length; col ++)
+		{
+			int newCol = (col + pixels[0].length/2)% pixels[0].length;
+			resultPixels[row][newCol].setRed(pixels[row][col].getRed());
+			resultPixels[row][newCol].setGreen(pixels[row][col].getGreen());
+			resultPixels[row][newCol].setBlue(pixels[row][col].getBlue());
+		}
+	}
 	
+	return result;
+  }
+  
+   /* <Description here>
+ * @param shiftCount The number of pixels to shift to the right
+ * @param steps The number of steps
+ * @return The picture with pixels shifted in stair steps
+ */
+  public Picture stairStep(int shiftCount, int steps)
+  {
+	Pixel[][] pixels = this.getPixels2D();
+	Picture result = new Picture(pixels.length, pixels[0].length);
+	Pixel[][] resultPixels = result.getPixels2D();
+	int shift = 0;
+
+	for ( int row = 0 ; row < pixels.length; row ++)
+	{
+		
+		for (int col = 0; col < pixels[0].length; col++)
+		{
+				
+			shift = (col + shiftCount*(row/(pixels[0].length/steps))) % pixels[0].length;
+			resultPixels[row][shift].setRed(pixels[row][col].getRed());
+			resultPixels[row][shift].setGreen(pixels[row][col].getGreen());
+			resultPixels[row][shift].setBlue(pixels[row][col].getBlue());
+		}
+	}
+
+	return result;	
+  }
+  
+  /* 
+ * @param maxFactor Max height (shift) of curve in pixels
+ * @return Liquified picture
+ */
+ public Picture liquify(int maxHeight)
+ {
+	Pixel[][] pixels = this.getPixels2D();
+	Picture result = new Picture(pixels.length, pixels[0].length);
+	Pixel[][] resultPixels = result.getPixels2D();
+	double exponent = 0;
+	double bellWidth = 100;
+	int rightShift = 0;
+	
+	for (int row = 0; row < pixels.length; row++)
+	{
+		exponent = Math.pow(row - pixels.length / 2.0, 2) / (2.0 * Math.pow(bellWidth, 2));
+		rightShift = (int)(maxHeight * Math.exp(-1 * exponent));
+		for ( int col = 0 ; col < pixels[0].length; col ++)
+		{
+			
+			resultPixels[row][(rightShift+col)%pixels[0].length].setRed(pixels[row][col].getRed());
+			resultPixels[row][(rightShift+col)%pixels[0].length].setGreen(pixels[row][col].getGreen());
+			resultPixels[row][(rightShift+col)%pixels[0].length].setBlue(pixels[row][col].getBlue());
+		}
+	}
+	
+	return result;
+ }
+ 
+ /* <Description here>
+ * @param amplitude The maximum shift of pixels
+ * @return Wavy picture
+ */
+ public Picture wavy(int amplitude)
+ {
+	Pixel[][] pixels = this.getPixels2D();
+	Picture result = new Picture(pixels.length, pixels[0].length);
+	Pixel[][] resultPixels = result.getPixels2D();
+	double frequency = 0.005;
+	int phaseShift = 20;
+	int shift = 0;
+	int newCol = 0;
+	
+	for (int row = 0; row < pixels.length; row++)
+	{
+		shift = (int) (amplitude * Math.sin((2 * Math.PI* frequency*row) + phaseShift));
+		System.out.println(shift + " " + row);
+		for ( int col = 0 ; col < pixels[0].length; col ++)
+		{
+			
+			newCol = ((col+shift)%pixels[0].length);
+			if(newCol < 0)
+				newCol = newCol + pixels[0].length;
+			resultPixels[row][newCol].setRed(pixels[row][col].getRed());
+			resultPixels[row][newCol].setGreen(pixels[row][col].getGreen());
+			resultPixels[row][newCol].setBlue(pixels[row][col].getBlue());
+		}
+	}
+	
+	return result;
+	
+ }
+ 
+  
   /** Method to set the blue to 0 */
   public void zeroBlue()
   {
@@ -237,48 +305,47 @@ public class Picture extends SimplePicture
       }
     }
   }
+  // method to set all values that arent blue to 0
   
-  /** Method to remove all RGB values except blue values, set red and green to 0 */
   public void keepOnlyBlue()
   {
-    Pixel[][] pixels = this.getPixels2D();
+	Pixel[][] pixels = this.getPixels2D();
     for (Pixel[] rowArray : pixels)
     {
       for (Pixel pixelObj : rowArray)
       {
-            pixelObj.setRed(0);
-			pixelObj.setGreen(0);
+        pixelObj.setRed(0);
+        pixelObj.setGreen(0);
       }
     }
   }
   
-  /** Method to negate all pixels */
   public void negate()
   {
-    Pixel[][] pixels = this.getPixels2D();
+	Pixel[][] pixels = this.getPixels2D();
     for (Pixel[] rowArray : pixels)
     {
       for (Pixel pixelObj : rowArray)
       {
-        pixelObj.setRed(255- pixelObj.getRed());
-        pixelObj.setBlue(255- pixelObj.getBlue());
-        pixelObj.setGreen(255- pixelObj.getGreen());
+		pixelObj.setRed(255-pixelObj.getRed());
+		pixelObj.setGreen(255-pixelObj.getGreen());
+		pixelObj.setBlue(255-pixelObj.getBlue());
       }
     }
   }
   
-  /** Sets every pixel to a shade of grey */
-  public void grayscale()
+   public void grayscale()
   {
-    Pixel[][] pixels = this.getPixels2D();
+	Pixel[][] pixels = this.getPixels2D();
     for (Pixel[] rowArray : pixels)
     {
       for (Pixel pixelObj : rowArray)
       {
-		int avg = (pixelObj.getBlue() + pixelObj.getRed() + pixelObj.getGreen())/3;
-        pixelObj.setRed(avg);
-        pixelObj.setBlue(avg);
-        pixelObj.setGreen(avg);
+		int color = (pixelObj.getRed() + pixelObj.getGreen() + pixelObj.getBlue())/3; 
+		System.out.println(color);
+		pixelObj.setRed(color);
+		pixelObj.setGreen(color);
+		pixelObj.setBlue(color);
       }
     }
   }
@@ -402,7 +469,6 @@ public class Picture extends SimplePicture
     }
   }
   
-	
   
   /* Main method for testing - each class in Java can have a main 
    * method 
