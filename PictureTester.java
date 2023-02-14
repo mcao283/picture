@@ -76,6 +76,14 @@ public class PictureTester
     beach.explore();
 	  
   }
+  
+  public static void testedgeDetectionBelow(int x)
+  {
+	Picture beach = new Picture("images/redMotorcycle.jpg");
+    beach.explore();
+	beach = beach.edgeDetectionBelow(x);
+    beach.explore();
+  }
   /** Method to test mirrorVertical */
   public static void testMirrorVertical()
   {
@@ -84,6 +92,7 @@ public class PictureTester
     caterpillar.mirrorVertical();
     caterpillar.explore();
   }
+  
   
   /** Method to test mirrorTemple */
   public static void testMirrorTemple()
@@ -125,7 +134,8 @@ public class PictureTester
     //testGrayscale();
     //testswapLeftRight();
    //testStairStep(10,10);
-   testWavy();
+  // testWavy();
+  testedgeDetectionBelow(10);
 	//testLiquify();
     //testFixUnderwater();
     //testMirrorVertical();

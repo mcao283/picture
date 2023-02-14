@@ -292,7 +292,31 @@ public class Picture extends SimplePicture
 	
  }
  
-  
+  public Picture edgeDetectionBelow(int threshold)
+  {
+	Pixel[][] pixels = this.getPixels2D();
+	Picture result = new Picture(pixels.length, pixels[0].length);
+	Pixel[][] resultPixels = result.getPixels2D();
+	Pixel topPixel = null;
+    Pixel bottomPixel = null;
+    Color bottomColor = null;
+	for(int row = 0; row < pixels.length - 1 ; row++)
+	{
+		for(int col = 0; col < pixels[0].length ; col++)
+		{
+			topPixel = pixels[row][col];
+			bottomPixel = pixels[row+1][col];
+			bottomColor = bottomPixel.getColor();
+			
+			if(topPixel.colorDistance(bottomColor) > threshold)
+				resultPixels[row][col].setColor(Color.BLACK);
+			else
+				resultPixels[row][col].setColor(Color.WHITE);
+		}
+	}
+	
+	return result;
+  }
   /** Method to set the blue to 0 */
   public void zeroBlue()
   {
